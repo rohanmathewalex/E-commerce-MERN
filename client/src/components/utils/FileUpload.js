@@ -18,7 +18,7 @@ function FileUpload(props) {
       (response) => {
         if (response.data.success) {
           setImages([...Images, response.data.image]);
-          props.refreshFunction([...Images, response.data.image]);
+          props.refreshFunction([...Images, response.data.image]);//added a image 
         } else {
           alert("Failed to save the image in server");
         }
@@ -55,6 +55,7 @@ function FileUpload(props) {
           </div>
         )}
       </Dropzone>
+      {/*Template for  Display the uploaded image */}
       <div
         style={{
           display: "flex",
@@ -63,7 +64,7 @@ function FileUpload(props) {
           overflowX: "scroll",
         }}
       >
-        {/*Template for  Display the uploaded image */}
+
         {Images.map((image, index) => (
           <div onClick={() => onDelete(image)}>
             <img

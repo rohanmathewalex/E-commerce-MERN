@@ -44,12 +44,22 @@ function UploadProductPage(props) {
   const [Images, setImages] = useState([]);
   //update Images
   const updateImages = (newImages) => {
+    //console.log(newImages);
     setImages(newImages);
   };
   //on submit
   const onSubmit = (event) => {
     event.preventDefault();
 
+    if (
+      !TitleValue ||
+      !DescriptionValue ||
+      !PriceValue ||
+      !ContinentValue ||
+      !Images
+    ) {
+      return alert("fill all the Fields first!.");
+    }
     const variables = {
       writer: props.user.userData._id,
       title: TitleValue,
