@@ -50,14 +50,31 @@ router.post("/uploadProduct", auth, (req, res) => {
   });
 });
 
-router.post("/getProducts", auth, (req, res) => {
+router.post("/getProducts", (req, res) => {
   //Conditions to mongoDb to fetch data
   let order = req.body.order ? req.body.order : "desc";
   let sortBy = req.body.sortBy ? req.body.sortBy : "_id";
   let limit = req.body.limit ? parseInt(req.body.limit) : 100;
   let skip = parseInt(req.body.skip);
 
-  Product.find()
+  let findArgs = {};
+
+
+
+  for (let key in req.body.filters) {
+    console.log(key)
+    if (req.body.filters[key].length > 0) {
+      if (key === "price") {
+
+      } else {
+        findArgs[key] = req.body.filters[key];
+
+      }
+    }
+
+  }
+
+  Product.find(findArgs)
     .populate("writer")
     .sort([[sortBy, order]])
     .skip(skip)

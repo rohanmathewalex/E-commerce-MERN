@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Axios from "axios";
 import { Icon, Col, Card, Row } from "antd";
 import ImageSlider from "../../utils/ImageSlider";
+import Checkbox from "./Sections/CheckBox";
 
 const { Meta } = Card;
 
@@ -10,6 +11,11 @@ function LandingPage() {
   const [Skip, setSkip] = useState(0);
   const [Limit, setLimit] = useState(8);
   const [PostSize, setPostSize] = useState(0)
+
+  const [Filters, setFilters] = useState({
+    continents: [],
+    price: []
+  })
 
   useEffect(() => {
     const variables = {
@@ -24,19 +30,17 @@ function LandingPage() {
     Axios.post('/api/product/getProducts', variables)
       .then(response => {
         if (response.data.success) {
-
-          setProducts([...Products, ...response.data.products])
-
+          if (variables.loadMore) {
+            setProducts([...Products, ...response.data.products])
+          } else {
+            setProducts(response.data.products)
+          }
           setPostSize(response.data.postSize)
-
-          console.log(response.data.products)
         } else {
-          alert('Failed to fetch product data')
+          alert('Failed to fectch product datas')
         }
-
       })
   }
-
   //When clicking Load More button it loads more produts in Landing Page
   const onLoadMore = () => {
     let skip = Skip + Limit;
@@ -44,6 +48,7 @@ function LandingPage() {
     const variables = {
       skip: skip,
       limit: Limit,
+      loadMore: true
     };
 
     getProducts(variables);
@@ -59,6 +64,33 @@ function LandingPage() {
       </Col>
     );
   });
+
+  const showFilteredResults = (filters) => {
+    const variables = {
+      skip: 0,
+      limit: Limit,
+      filters: filters
+    }
+
+    getProducts(variables)
+    setSkip(0)
+
+  }
+
+  const handleFilters = (filters, category) => {
+    console.log(filters)
+
+    const newFilters = { ...Filters }
+    newFilters[category] = filters
+
+    if (category === " price") {
+
+    }
+
+    showFilteredResults(newFilters)
+    setFilters(newFilters)
+
+  }
   //template for landing Page
   return (
     <div style={{ width: "75%", margin: "3rem auto" }}>
@@ -68,6 +100,9 @@ function LandingPage() {
         </h2>
       </div>
       {/* Filter */}
+      <Checkbox
+        handleFilters={filters => handleFilters(filters, "continents")}
+      />
 
       {/*Search */}
 
@@ -90,14 +125,15 @@ function LandingPage() {
       }
       <br></br>
 
-      {PostSize >= Limit &&
+      {
+        PostSize >= Limit &&
         <div style={{ display: "flex", justifyContent: "center" }}>
           <button onClick={onLoadMore}>Load More</button>
         </div>
       }
 
 
-    </div>
+    </div >
   );
 }
 
