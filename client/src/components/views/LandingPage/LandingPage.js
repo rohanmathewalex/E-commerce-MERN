@@ -5,6 +5,7 @@ import ImageSlider from "../../utils/ImageSlider";
 import Checkbox from "./Sections/CheckBox";
 import RadioBox from "./Sections/RadioBox";
 import { continents, price } from "./Sections/Datas"
+import SearchFeature from './Sections/SearchFeature';
 
 const { Meta } = Card;
 
@@ -13,6 +14,7 @@ function LandingPage() {
   const [Skip, setSkip] = useState(0);
   const [Limit, setLimit] = useState(8);
   const [PostSize, setPostSize] = useState(0)
+  const [SearchTerms, setSearchTerms] = useState("")
 
   const [Filters, setFilters] = useState({
     continents: [],
@@ -50,12 +52,15 @@ function LandingPage() {
     const variables = {
       skip: skip,
       limit: Limit,
-      loadMore: true
-    };
-
-    getProducts(variables);
+      loadMore: true,
+      filters: Filters,
+      searchTerm: SearchTerms
+    }
+    getProducts(variables)
     setSkip(skip)
-  };
+  }
+
+
 
   const renderCards = Products.map((product, index) => {
     return (
@@ -76,8 +81,8 @@ function LandingPage() {
 
     getProducts(variables)
     setSkip(0)
-
   }
+
   const handlePrice = (value) => {
     const data = price;
     let array = [];
@@ -109,6 +114,25 @@ function LandingPage() {
     showFilteredResults(newFilters)
     setFilters(newFilters)
   }
+
+  const updateSearchTerms = (newSearchTerm) => {
+
+    console.log(newSearchTerm)
+
+    const variables = {
+      skip: 0,
+      limit: Limit,
+      filters: Filters,
+      searchTerm: newSearchTerm
+    }
+    setSkip(0)
+    setSearchTerms(newSearchTerm)
+
+    getProducts(variables)
+  }
+
+
+
   //template for landing Page
   return (
     <div style={{ width: "75%", margin: "3rem auto" }}>
@@ -118,7 +142,7 @@ function LandingPage() {
         </h2>
       </div>
       {/* Filter */}
-      continents, price
+
       <Row gutter={[16, 16]}>
 
         <Col lg={12} xs={24}>
@@ -137,16 +161,16 @@ function LandingPage() {
         </Col>
 
       </Row>
-
-
-
-
-
-
-
-
-
       {/*Search */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '1rem auto' }}>
+
+        <SearchFeature
+          refreshFunction={updateSearchTerms}
+
+        />
+
+      </div>
+
 
       {Products.length === 0 ?
         <div
