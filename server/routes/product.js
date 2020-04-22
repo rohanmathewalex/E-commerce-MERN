@@ -123,7 +123,11 @@ router.get("/products_by_id", (req, res) => {
 
 
   if (type === "array") {
-
+    let ids = req.query.id.split(',');
+    productIds = [];
+    productIds = ids.map(item => {
+      return item
+    })
   }
   console.log(productIds)
   //we need to find the product information that belong to product Id 

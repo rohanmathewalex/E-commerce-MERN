@@ -9,6 +9,7 @@ import NavBar from "./views/NavBar/NavBar";
 import Footer from "./views/Footer/Footer";
 import UploadProductPage from "./views/UploadProductPage/UploadProductPage";
 import DetailProductPage from './views/DetailProductPage/DetailProductPage';
+import CartPage from './views/CartPage/CartPage';
 
 
 //null   Anyone Can go inside
@@ -34,6 +35,12 @@ function App() {
             exact
             path="/product/:productId"
             component={Auth(DetailProductPage, null)}
+          />
+
+          <Route
+            exact
+            path="/user/cart"
+            component={Auth(CartPage, true)}
           />
         </Switch>
       </div>
