@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { getCartItems, removeCartItem } from '../../../_actions/user_actions';
+import { getCartItems, removeCartItem, onSuccessBuy } from '../../../_actions/user_actions';
 import UserCardBlock from './Sections/UserCardBlock';
 import { Result, Empty } from 'antd';
 import Axios from 'axios';
+import Paypal from '../../utils/Paypal';
+
 
 
 function CartPage(props) {
@@ -65,6 +67,28 @@ function CartPage(props) {
             })
     }
 
+    //payment functions
+    const transactionSuccess = (data) => {
+        dispatch(onSuccessBuy({
+            cartDetail: props.user.cartDetail,
+            paymentData: data
+        }))
+            .then(response => {
+                if (response.payload.success) {
+                    setShowSuccess(true)
+                    setShowTotal(false)
+                }
+            })
+    }
+
+    const transactionError = () => {
+        console.log('Paypal error')
+    }
+
+    const transactionCanceled = () => {
+        console.log('Transaction canceled')
+    }
+
 
     return (
         <div style={{ width: '85%', margin: '3rem auto' }}>
@@ -98,6 +122,17 @@ function CartPage(props) {
                 }
 
             </div>
+            {/* Paypal Button */}
+            {ShowTotal &&
+
+                <Paypal
+                    toPay={Total}
+                    onSuccess={transactionSuccess}
+                    transactionError={transactionError}
+                    transactionCanceled={transactionCanceled}
+                />
+
+            }
 
         </div>
     )
